@@ -4,8 +4,15 @@ import jsonPlaceholder from "../apis/jsonPlaceholder";
 export const fetchPostsAndUsers = () => async (dispatch, getState) => {
   await dispatch(fetchPosts());
   // Lodashs version of the .map() array helper: https://lodash.com/docs#map
-  const userIds = _.uniq(_.map(getState().posts, "userId"));
-  userIds.forEach(id => dispatch(fetchUser(id)));
+  // const userIds = _.uniq(_.map(getState().posts, "userId"));
+  // userIds.forEach(id => dispatch(fetchUser(id)));
+
+  // Further refactor using lodash. Above two lines are other optional way
+  _.chain(getState().posts)
+    .map("userId") // Maps over posts, pulling out userId
+    .uniq() // Find the unique values
+    .forEach(id => dispatch(fetchUser(id))) // Run function over each unique value
+    .value(); // Executes the chain
 };
 
 export const fetchPosts = () => async dispatch => {
